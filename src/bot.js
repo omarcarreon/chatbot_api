@@ -1,4 +1,5 @@
 const axios = require('axios');
+const cache = require('./cache.js');
 
 const HF_API_URL = 'https://router.huggingface.co/v1/chat/completions';
 const HF_API_TOKEN = process.env.HF_API_TOKEN || '';
@@ -7,8 +8,6 @@ const headers = {
   Authorization: `Bearer ${HF_API_TOKEN}`,
   'Content-Type': 'application/json'
 };
-
-const conversationTopics = {}; // { convoId: { topic: string, stance: string } }
 
 function extractTopicAndStance(initialMessage) {
   // Fixed expected parser: "Debate: [topic]. Take side: [stance]"
@@ -20,17 +19,17 @@ function extractTopicAndStance(initialMessage) {
   };
 }
 
-function registerConversation(convoId, initialMessage) {
+async function registerConversation(convoId, initialMessage) {
   const { topic, stance } = extractTopicAndStance(initialMessage);
-  conversationTopics[convoId] = { topic, stance };
+  await cache.setConversationTopic(convoId, topic, stance);
 }
 
-function getConversationContext(convoId) {
-  return conversationTopics[convoId] || null;
+async function getConversationContext(convoId) {
+  return await cache.getConversationTopic(convoId);
 }
 
 async function generateReply(history, convoId) {
-  const context = getConversationContext(convoId);
+  const context = await getConversationContext(convoId);
   const prompt = buildPrompt(history, context);
 
   try {

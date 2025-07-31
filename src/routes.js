@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const memoryStore = require('./memoryStore.js');
+const cache = require('./cache.js');
 const bot = require('./bot.js');
 
 router.get('/', (req, res) => {
@@ -17,21 +17,22 @@ router.post('/debate', async (req, res) => {
   // Start a new conversation
   let convoId = conversation_id;
   if (!convoId) {
-    convoId = memoryStore.createConversation(message);
-    bot.registerConversation(convoId, message);
+    convoId = require('uuid').v4();
+    await cache.createConversation(convoId, message);
+    await bot.registerConversation(convoId, message);
   } else {
-    memoryStore.appendMessage(convoId, { role: 'user', message });
+    await cache.appendToHistory(convoId, { role: 'user', message });
   }
 
-  const history = memoryStore.getHistory(convoId);
+  const history = await cache.getConversationHistory(convoId);
   if (!history) {
     return res.status(404).json({ error: 'Conversation not found.' });
   }
 
   const botReply = await bot.generateReply(history, convoId);
-  memoryStore.appendMessage(convoId, { role: 'bot', message: botReply });
+  await cache.appendToHistory(convoId, { role: 'bot', message: botReply });
 
-  const trimmedHistory = memoryStore.getTrimmedHistory(convoId);
+  const trimmedHistory = await cache.getTrimmedHistory(convoId);
 
   res.json({
     conversation_id: convoId,
