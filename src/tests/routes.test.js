@@ -1,7 +1,6 @@
 const request = require('supertest');
 const axios = require('axios');
 
-// Mock axios before importing app
 jest.mock('axios');
 
 const app = require('../app');
@@ -71,7 +70,7 @@ describe('API Endpoints', () => {
       expect(response.body.example).toBeDefined();
       expect(response.body.format).toBeDefined();
       
-      // Verify API was NOT called for invalid format
+      // Verify API was NOT called when invalid format
       expect(axios.post).not.toHaveBeenCalled();
     });
 
