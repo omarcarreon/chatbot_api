@@ -28,7 +28,7 @@ router.post('/debate', async (req, res) => {
     return res.status(404).json({ error: 'Conversation not found.' });
   }
 
-  const botReply = await bot.generateReply(history, message, convoId);
+  const botReply = await bot.generateReply(history, convoId);
   memoryStore.appendMessage(convoId, { role: 'bot', message: botReply });
 
   const trimmedHistory = memoryStore.getTrimmedHistory(convoId);

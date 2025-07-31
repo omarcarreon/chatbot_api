@@ -29,7 +29,7 @@ function getConversationContext(convoId) {
   return conversationTopics[convoId] || null;
 }
 
-async function generateReply(history, userMessage, convoId) {
+async function generateReply(history, convoId) {
   const context = getConversationContext(convoId);
   const prompt = buildPrompt(history, context);
 
