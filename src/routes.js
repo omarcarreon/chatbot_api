@@ -17,6 +17,8 @@ router.post('/debate', async (req, res) => {
 
   // Start a new conversation
   let convoId = conversation_id;
+  let history = null;
+
   if (!convoId) {
     const validation = validateDebateFormat(message);
     if (!validation.isValid) {
@@ -30,13 +32,15 @@ router.post('/debate', async (req, res) => {
     convoId = require('uuid').v4();
     await cache.createConversation(convoId, message);
     await bot.registerConversation(convoId, message);
+    history = await cache.getConversationHistory(convoId);
   } else {
+    // Check if conversation exists before appending
+    history = await cache.getConversationHistory(convoId);
+    if (!history) {
+      return res.status(404).json({ error: 'Conversation not found.' });
+    }
+    
     await cache.appendToHistory(convoId, { role: 'user', message });
-  }
-
-  const history = await cache.getConversationHistory(convoId);
-  if (!history) {
-    return res.status(404).json({ error: 'Conversation not found.' });
   }
 
   const botReply = await bot.generateReply(history, convoId);

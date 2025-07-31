@@ -121,7 +121,7 @@ run: check-docker ## Run the service and all related services in Docker
 		echo "CMD [\"npm\", \"start\"]" >> Dockerfile; \
 		echo "✅ Dockerfile created."; \
 	fi
-	docker-compose up --build -d
+	docker-compose up --build
 	@echo "✅ Services started!"
 	@echo "🌐 API available at: http://localhost:3000"
 	@echo " Test with: curl -X POST http://localhost:3000/api/debate \\"
