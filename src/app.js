@@ -1,10 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const routes = require('./routes.js');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 
 const app = express();
 app.use(express.json());
 app.use('/api', routes);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Only start server if this file is run directly
 if (require.main === module) {

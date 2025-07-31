@@ -4,10 +4,35 @@ const cache = require('./cache.js');
 const bot = require('./bot.js');
 const { validateDebateFormat } = require('./utils/validators.js');
 
-router.get('/', (req, res) => {
-  res.send('Chatbot API is running. Use POST /api/debate');
-});
-
+/**
+ * @openapi
+ * /api/debate:
+ *   post:
+ *     summary: Start or continue a debate conversation.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               conversation_id:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Conversation ID (omit or null to start a new one)
+ *               message:
+ *                 type: string
+ *                 description: "The debate message. Format: 'Debate: [topic]. Take side: [stance]'"
+ *             required:
+ *               - message
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Invalid input
+ *       404:
+ *         description: Conversation not found
+ */
 router.post('/debate', async (req, res) => {
   const { conversation_id, message } = req.body;
 
@@ -52,6 +77,10 @@ router.post('/debate', async (req, res) => {
     conversation_id: convoId,
     message: trimmedHistory
   });
+});
+
+router.get('/', (req, res) => {
+  res.send('Chatbot API is running. Use POST /api/debate');
 });
 
 module.exports = router;
