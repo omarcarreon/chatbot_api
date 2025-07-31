@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cache = require('./cache.js');
+const { validateDebateFormat } = require('./utils/validators.js');
 
 const HF_API_URL = 'https://router.huggingface.co/v1/chat/completions';
 const HF_API_TOKEN = process.env.HF_API_TOKEN || '';
@@ -10,12 +11,16 @@ const headers = {
 };
 
 function extractTopicAndStance(initialMessage) {
-  // Fixed expected parser: "Debate: [topic]. Take side: [stance]"
-  const topicMatch = initialMessage.match(/Debate:\s*(.*?)\.?\s*Take side:/i);
-  const stanceMatch = initialMessage.match(/Take side:\s*(.*)/i);
+  const validation = validateDebateFormat(initialMessage);
+  
+  if (validation.isValid) {
+    const { topic, stance } = validation;
+    return { topic, stance };
+  }
+  
   return {
-    topic: topicMatch ? topicMatch[1].trim() : 'Topic not found',
-    stance: stanceMatch ? stanceMatch[1].trim() : 'Stance not found'
+    topic: 'Topic not found',
+    stance: 'Stance not found'
   };
 }
 

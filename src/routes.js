@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cache = require('./cache.js');
 const bot = require('./bot.js');
+const { validateDebateFormat } = require('./utils/validators.js');
 
 router.get('/', (req, res) => {
   res.send('Chatbot API is running. Use POST /api/debate');
@@ -17,6 +18,15 @@ router.post('/debate', async (req, res) => {
   // Start a new conversation
   let convoId = conversation_id;
   if (!convoId) {
+    const validation = validateDebateFormat(message);
+    if (!validation.isValid) {
+      return res.status(400).json({
+        error: validation.error,
+        example: validation.example,
+        format: 'Debate: [topic]. Take side: [stance]'
+      });
+    }
+
     convoId = require('uuid').v4();
     await cache.createConversation(convoId, message);
     await bot.registerConversation(convoId, message);
