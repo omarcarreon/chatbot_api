@@ -80,6 +80,10 @@ async function clearAllCache() {
   await client.flushAll();
 }
 
+async function closeConnection() {
+  await client.quit();
+}
+
 module.exports = {
   setConversationTopic,
   getConversationTopic,
@@ -90,5 +94,6 @@ module.exports = {
   deleteConversation,
   getTrimmedHistory,
   getCacheStats,
-  clearAllCache
+  clearAllCache,
+  closeConnection
 }; 
