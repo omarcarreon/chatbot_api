@@ -198,11 +198,15 @@ make check-npm     # Check if npm is installed
    - Get your token from: https://huggingface.co/settings/tokens
    - Add it to your .env file
 
-3. **Port Already in Use**
+3. **No credits for Hugging Face**
+   - Create a new Hugging Face account or recharge credits
+   - Update HF_API_TOKEN variable
+
+4. **Port Already in Use**
    - Change PORT in .env file
    - Or stop other services using port 3000
 
-4. **Docker Issues**
+5. **Docker Issues**
    - Ensure Docker is running
    - Try `docker-compose down` then `docker-compose up --build`
 
