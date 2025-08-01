@@ -121,7 +121,7 @@ describe('API Endpoints', () => {
         .post('/api/debate')
         .send({
           conversation_id: convoId,
-          message: 'But there is science that proves the Earth is round'
+          message: 'But there is evidence that proves the Earth is round'
         });
       
       expect(secondResponse.status).toBe(200);
