@@ -1,3 +1,13 @@
+/**
+ * Cache Service for Chatbot API
+ * 
+ * Handles Redis operations for conversation storage and retrieval.
+ * Provides functions for topic/stance caching and conversation history.
+ * 
+ * @module cache
+ * @version 1.0.0
+ */
+
 const redis = require('redis');
 
 // Redis client configuration
@@ -19,32 +29,73 @@ const HISTORY_KEY_PREFIX = 'conversation:history:';
 // TTL in seconds (24 hours)
 const TTL = 24 * 60 * 60;
 
-// Topic and stance functions
+// ============================================================================
+// TOPIC AND STANCE FUNCTIONS
+// ============================================================================
+
+/**
+ * Stores conversation topic and stance in Redis cache
+ * 
+ * @param {string} convoId - Unique conversation identifier
+ * @param {string} topic - Debate topic
+ * @param {string} stance - Debate stance
+ * @returns {Promise<void>}
+ * @throws {Error} When Redis operation fails
+ */
 async function setConversationTopic(convoId, topic, stance) {
   const key = TOPIC_KEY_PREFIX + convoId;
   const data = JSON.stringify({ topic, stance });
   await client.setEx(key, TTL, data);
 }
 
+/**
+ * Retrieves conversation topic and stance from Redis cache
+ * 
+ * @param {string} convoId - Unique conversation identifier
+ * @returns {Promise<Object|null>} Topic and stance object or null if not found
+ */
 async function getConversationTopic(convoId) {
   const key = TOPIC_KEY_PREFIX + convoId;
   const data = await client.get(key);
   return data ? JSON.parse(data) : null;
 }
 
-// Conversation History functions
+// ============================================================================
+// CONVERSATION HISTORY FUNCTIONS
+// ============================================================================
+
+/**
+ * Stores conversation history in Redis cache
+ * 
+ * @param {string} convoId - Unique conversation identifier
+ * @param {Array} history - Array of conversation messages
+ * @returns {Promise<void>}
+ */
 async function setConversationHistory(convoId, history) {
   const key = HISTORY_KEY_PREFIX + convoId;
   const data = JSON.stringify(history);
   await client.setEx(key, TTL, data);
 }
 
+/**
+ * Retrieves conversation history from Redis cache
+ * 
+ * @param {string} convoId - Unique conversation identifier
+ * @returns {Promise<Array|null>} Conversation history array or null if not found
+ */
 async function getConversationHistory(convoId) {
   const key = HISTORY_KEY_PREFIX + convoId;
   const data = await client.get(key);
   return data ? JSON.parse(data) : null;
 }
 
+/**
+ * Appends a new message to conversation history
+ * 
+ * @param {string} convoId - Unique conversation identifier
+ * @param {Object} messageObj - Message object with role and message properties
+ * @returns {Promise<Array>} Updated conversation history
+ */
 async function appendToHistory(convoId, messageObj) {
   let history = await getConversationHistory(convoId) || [];
   history.push(messageObj);
@@ -52,34 +103,54 @@ async function appendToHistory(convoId, messageObj) {
   return history;
 }
 
+/**
+ * Creates a new conversation with initial message
+ * 
+ * @param {string} convoId - Unique conversation identifier
+ * @param {string} initialMessage - The first message to start the conversation
+ * @returns {Promise<Array>} The conversation history array
+ */
 async function createConversation(convoId, initialMessage) {
   const history = [{ role: 'user', message: initialMessage }];
   await setConversationHistory(convoId, history);
   return history;
 }
 
-// Cleanup functions
-async function deleteConversation(convoId) {
-  const topicKey = TOPIC_KEY_PREFIX + convoId;
-  const historyKey = HISTORY_KEY_PREFIX + convoId;
-  await client.del(topicKey, historyKey);
-}
+// ============================================================================
+// CLEANUP FUNCTIONS
+// ============================================================================
 
+/**
+ * Retrieves trimmed conversation history (last N messages)
+ * 
+ * @param {string} convoId - Unique conversation identifier
+ * @param {number} maxMessages - Maximum number of messages to return (default: 10)
+ * @returns {Promise<Array>} Trimmed conversation history
+ */
 async function getTrimmedHistory(convoId, maxMessages = 10) {
   const history = await getConversationHistory(convoId);
   if (!history) return [];
   return history.slice(-maxMessages);
 }
 
-// Utility functions for monitoring
-async function getCacheStats() {
-  return await client.info('memory');
-}
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
 
+/**
+ * Clears all data from Redis cache
+ * 
+ * @returns {Promise<void>}
+ */
 async function clearAllCache() {
   await client.flushAll();
 }
 
+/**
+ * Closes Redis connection
+ * 
+ * @returns {Promise<void>}
+ */
 async function closeConnection() {
   await client.quit();
 }
@@ -91,9 +162,7 @@ module.exports = {
   getConversationHistory,
   appendToHistory,
   createConversation,
-  deleteConversation,
   getTrimmedHistory,
-  getCacheStats,
   clearAllCache,
   closeConnection
 }; 
