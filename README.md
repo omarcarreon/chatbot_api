@@ -31,8 +31,8 @@ cd chatbot_api
 make install
 
 
-# Check your email to find the HF_API_TOKEN required for the chatbot functionality
-# Update .env with the provided token
+# Check your email to find the HF_API_TOKEN and API_KEY tokens required for the project
+# Update .env with the provided tokens
 
 
 # Start the service with Docker
@@ -51,7 +51,7 @@ npm install
 
 # Create environment file
 cp .env.example .env
-# Edit .env with your configuration
+# Edit .env with your configuration and tokens provided by email
 ```
 
 ## 🔧 Environment Variables
@@ -60,6 +60,7 @@ Create a `.env` file in the root directory with the following variables:
 
 ```env
 # API Authentication (Required)
+# Provided by email
 API_KEY=api_key_here
 
 # Hugging Face API Token (Required)
@@ -177,9 +178,12 @@ chatbot_api/
 │   ├── routes.js           # API routes
 │   ├── bot.js              # AI integration
 │   ├── cache.js            # Redis cache operations
+│   ├── swagger.js          # Swagger API documentation
+│   ├── middleware/
+│   │   └── simpleAuth.js   # API key authentication
 │   ├── utils/
-│       ├── validators.js  # Input validation
-│   │   └── constants.js   # Global constants
+│   │   ├── validators.js   # Input validation
+│   │   └── constants.js    # Global constants
 │   └── tests/
 │       ├── routes.test.js  # API endpoint tests
 │       └── validators.test.js # Validation tests
