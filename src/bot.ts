@@ -8,9 +8,9 @@
  * @version 1.0.0
  */
 
-const axios = require('axios');
-const cache = require('./cache.js');
-const { validateDebateFormat } = require('./utils/validators.js');
+import axios from 'axios';
+import cache from './cache';
+import { validateDebateFormat } from './utils/validators';
 
 // AI API configuration
 const HF_API_URL = 'https://router.huggingface.co/v1/chat/completions';

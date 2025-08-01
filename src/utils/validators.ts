@@ -1,5 +1,5 @@
 // Validation utilities for the chatbot API
-const { DEBATE_PATTERNS } = require('./constants.js');
+import { DEBATE_PATTERNS } from './constants';
 
 /**
  * Validates the debate format: "Debate: [topic]. Take side: [stance]"

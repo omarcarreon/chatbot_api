@@ -8,11 +8,12 @@
  * @version 1.0.0
  */
 
-const express = require('express');
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
 const router = express.Router();
-const cache = require('./cache.js');
-const bot = require('./bot.js');
-const { validateDebateFormat } = require('./utils/validators.js');
+import cache from './cache';
+import bot from './bot';
+import { validateDebateFormat } from './utils/validators';
 
 /**
  * @openapi
@@ -68,7 +69,7 @@ router.post('/debate', async (req, res) => {
     }
 
     // Generate new conversation ID
-    convoId = require('uuid').v4();
+    convoId = uuidv4();
     await cache.createConversation(convoId, message);
     await bot.registerConversation(convoId, message);
     history = await cache.getConversationHistory(convoId);

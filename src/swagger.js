@@ -1,4 +1,4 @@
-const swaggerJSDoc = require('swagger-jsdoc');
+import swaggerJSDoc from 'swagger-jsdoc';
 
 const options = {
   definition: {
@@ -9,7 +9,7 @@ const options = {
       description: 'Simple API for debate chatbot',
     },
   },
-  apis: ['./src/routes.js'],
+  apis: ['./src/routes.ts'],
 };
 
-module.exports = swaggerJSDoc(options);
+export default swaggerJSDoc(options);

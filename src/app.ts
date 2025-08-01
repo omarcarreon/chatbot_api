@@ -1,8 +1,9 @@
-require('dotenv').config();
-const express = require('express');
-const routes = require('./routes.js');
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger');
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
+import routes from './routes';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger';
 
 const app = express();
 app.use(express.json());

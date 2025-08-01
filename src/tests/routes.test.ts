@@ -1,10 +1,10 @@
-const request = require('supertest');
-const axios = require('axios');
+import request from 'supertest';
+import axios from 'axios';
 
 jest.mock('axios');
 
-const app = require('../app');
-const cache = require('../cache');
+import app from '../app';
+import cache from '../cache';
 
 describe('API Endpoints', () => {
   beforeEach(async () => {
