@@ -75,11 +75,11 @@ install: check-docker check-node check-npm ## Install all requirements to run th
 		echo "# Server Configuration" >> .env; \
 		echo "PORT=3000" >> .env; \
 		echo "NODE_ENV=development" >> .env; \
-		echo "✅ .env file created. Please update HF_API_TOKEN and API_KEY with the tokens provided by email."; \
+		echo "✅ .env file created. Please update HF_API_TOKEN and API_KEY with the tokens in the .env file provided by email."; \
 	else \
 		echo "✅ .env file already exists."; \
 	fi
-	@echo "✅ Installation complete! Please update .env with the tokens provided by email and run 'make run' to start the service."
+	@echo "✅ Installation complete! Please ensure you have the exact .env file provided in the zip by email. Run 'make run' to start the service."
 	@echo "💡 Note: Redis will be started automatically with 'make run'"
 
 # Run tests

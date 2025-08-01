@@ -31,8 +31,7 @@ cd chatbot_api
 make install
 
 
-# Check your email to find the HF_API_TOKEN and API_KEY tokens required for the project
-# Update .env with the provided tokens
+# Validate that the .env file matches the one provided in the ZIP project sent by email
 
 
 # Start the service with Docker
@@ -51,7 +50,7 @@ npm install
 
 # Create environment file
 cp .env.example .env
-# Edit .env with your configuration and tokens provided by email
+# Edit .env with the .env file provided in the ZIP project sent by email
 ```
 
 ## 🔧 Environment Variables
@@ -60,12 +59,12 @@ Create a `.env` file in the root directory with the following variables:
 
 ```env
 # API Authentication (Required)
-# Provided by email
+# Provided by email in the .env file inside the zip folder
 API_KEY=api_key_here
 
 # Hugging Face API Token (Required)
 # Get your token from: https://huggingface.co/settings/tokens
-# For Tech Challenge purpose, API Token will be provided by email
+# For Tech Challenge purpose, API Token will be provided by in the .env file inside the zip folder sent by email
 HF_API_TOKEN=your_huggingface_token_here
 
 # Redis Configuration (Optional - defaults to localhost)
