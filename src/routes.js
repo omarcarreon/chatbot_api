@@ -97,19 +97,4 @@ router.post('/debate', async (req, res) => {
   });
 });
 
-/**
- * Health check endpoint
- * 
- * @openapi
- * /:
- *   get:
- *     summary: Health check endpoint
- *     responses:
- *       200:
- *         description: Success
- */
-router.get('/', (req, res) => {
-  res.send('Chatbot API is running. Use POST /api/debate');
-});
-
 module.exports = router;

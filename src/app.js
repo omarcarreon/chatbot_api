@@ -6,6 +6,29 @@ const swaggerSpec = require('./swagger');
 
 const app = express();
 app.use(express.json());
+
+/**
+ * Health check endpoint
+ * 
+ * @openapi
+ * /:
+ *   get:
+ *     summary: Health check endpoint
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Chatbot API is running',
+    endpoints: {
+      debate: 'POST /api/debate',
+      docs: 'GET /docs'
+    },
+    version: '1.0.0'
+  });
+});
+
 app.use('/api', routes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
