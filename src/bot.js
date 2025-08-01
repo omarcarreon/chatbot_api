@@ -110,7 +110,7 @@ function buildPrompt(history, context) {
   let prompt = `You are debating about: ${context.topic}\n`;
   prompt += `Your stance: ${context.stance}\n`;
   prompt += `Your job is to persuade the user with rational or emotional arguments (without being overly argumentative).\n`;
-  prompt += `IMPORTANT: Always respond in English only. Keep your response short and concise.\n`;
+  prompt += `IMPORTANT: Always respond in English only. Keep your response short and concise (max 50 words). Keep coherent with the conversation history. Do not repeat yourself.\n`;
   prompt += `RESPONSE STYLE: Provide simple, conversational arguments. Avoid formatting, bullet points, lists, or numbered items. Write in a natural, flowing conversation style.\n\n`;
 
   // Add whole conversation history to the prompt
