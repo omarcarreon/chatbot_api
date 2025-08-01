@@ -48,7 +48,10 @@ install: check-docker check-node check-npm ## Install all requirements to run th
 	npm install
 	@echo " Creating .env file if it doesn't exist..."
 	@if [ ! -f .env ]; then \
-		echo "# Hugging Face API Token" > .env; \
+		echo "# API Authentication" > .env; \
+		echo "API_KEY=api_key_here" >> .env; \
+		echo "" >> .env; \
+		echo "# Hugging Face API Token" >> .env; \
 		echo "HF_API_TOKEN=your_huggingface_token_here" >> .env; \
 		echo "" >> .env; \
 		echo "# Redis Configuration" >> .env; \
@@ -57,7 +60,7 @@ install: check-docker check-node check-npm ## Install all requirements to run th
 		echo "# Server Configuration" >> .env; \
 		echo "PORT=3000" >> .env; \
 		echo "NODE_ENV=development" >> .env; \
-		echo "✅ .env file created. Please update HF_API_TOKEN with the token provided by email."; \
+		echo "✅ .env file created. Please update HF_API_TOKEN and API_KEY with the tokens provided by email."; \
 	else \
 		echo "✅ .env file already exists."; \
 	fi
@@ -121,11 +124,14 @@ run: check-docker ## Run the service and all related services in Docker
 		echo "CMD [\"npm\", \"start\"]" >> Dockerfile; \
 		echo "✅ Dockerfile created."; \
 	fi
-	docker-compose up --build
+	docker-compose up --build -d
 	@echo "✅ Services started!"
 	@echo "🌐 API available at: http://localhost:3000"
+	@echo "📚 API Documentation: http://localhost:3000/docs"
+	@echo "🔐 API requires authentication. Use x-api-key header."
 	@echo " Test with: curl -X POST http://localhost:3000/api/debate \\"
 	@echo "  -H 'Content-Type: application/json' \\"
+	@echo "  -H 'x-api-key: api_key_here' \\"
 	@echo "  -d '{\"message\": \"Debate: The Earth is flat. Take side: You agree\"}'"
 
 # Teardown of all running services

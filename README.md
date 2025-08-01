@@ -59,6 +59,9 @@ cp .env.example .env
 Create a `.env` file in the root directory with the following variables:
 
 ```env
+# API Authentication (Required)
+API_KEY=api_key_here
+
 # Hugging Face API Token (Required)
 # Get your token from: https://huggingface.co/settings/tokens
 # For Tech Challenge purpose, API Token will be provided by email
@@ -76,6 +79,7 @@ NODE_ENV=development
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
+| `API_KEY` | API authentication key | ✅ Yes | - |
 | `HF_API_TOKEN` | Your Hugging Face API token | ✅ Yes | - |
 | `REDIS_URL` | Redis connection URL | ❌ No | `redis://localhost:6379` |
 | `PORT` | Server port | ❌ No | `3000` |
@@ -108,13 +112,25 @@ Once the service is running, visit the interactive API documentation:
 
 **Swagger UI**: http://localhost:3000/docs
 
+**Note**: The Swagger UI includes an "Authorize" button where you can enter your API key to test endpoints directly in the browser.
+
 ## 🔧 API Usage
+
+### Authentication
+
+All API endpoints require authentication using the `x-api-key` header:
+
+```bash
+# Include this header with all requests
+-H "x-api-key: api_key_here"
+```
 
 ### Start a New Debate
 
 ```bash
 curl -X POST http://localhost:3000/api/debate \
   -H "Content-Type: application/json" \
+  -H "x-api-key: api_key_here" \
   -d '{
     "message": "Debate: The Earth is flat. Take side: You agree that earth is flat"
   }'
@@ -125,6 +141,7 @@ curl -X POST http://localhost:3000/api/debate \
 ```bash
 curl -X POST http://localhost:3000/api/debate \
   -H "Content-Type: application/json" \
+  -H "x-api-key: api_key_here" \
   -d '{
     "conversation_id": "your-conversation-id",
     "message": "But there is evidence that proves the Earth is round"
@@ -208,23 +225,28 @@ The application uses two separate Redis cache keys for optimal performance:
 
 ### Common Issues
 
-1. **Redis Connection Error**
+1. **Authentication Error (401 Unauthorized)**
+   - Ensure you're including the `x-api-key` header
+   - Check that API_KEY is set in your .env file
+   - Verify the API key matches between your request and .env file
+
+2. **Redis Connection Error**
    - Ensure Redis is running: `docker-compose up redis`
    - Check REDIS_URL in .env file
 
-2. **HF_API_TOKEN Error**
+3. **HF_API_TOKEN Error**
    - Get your token from: https://huggingface.co/settings/tokens
    - Add it to your .env file
 
-3. **No credits for Hugging Face**
+4. **No credits for Hugging Face**
    - Create a new Hugging Face account or recharge credits
    - Update HF_API_TOKEN variable
 
-4. **Port Already in Use**
+5. **Port Already in Use**
    - Change PORT in .env file
    - Or stop other services using port 3000
 
-5. **Docker Issues**
+6. **Docker Issues**
    - Ensure Docker is running
    - Try `docker-compose down` then `docker-compose up --build`
 

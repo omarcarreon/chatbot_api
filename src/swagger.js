@@ -8,6 +8,21 @@ const options = {
       version: '1.0.0',
       description: 'Simple API for debate chatbot',
     },
+    components: {
+      securitySchemes: {
+        apiKeyAuth: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'x-api-key',
+          description: 'Enter your API key in the format: your-api-key'
+        }
+      }
+    },
+    security: [
+      {
+        apiKeyAuth: []
+      }
+    ]
   },
   apis: ['./src/routes.js'],
 };

@@ -13,12 +13,15 @@ const router = express.Router();
 const cache = require('./cache.js');
 const bot = require('./bot.js');
 const { validateDebateFormat } = require('./utils/validators.js');
+const { simpleAuth } = require('./middleware/simpleAuth.js');
 
 /**
  * @openapi
  * /api/debate:
  *   post:
  *     summary: Start or continue a debate conversation.
+ *     security:
+ *       - apiKeyAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -51,36 +54,33 @@ const { validateDebateFormat } = require('./utils/validators.js');
  *         content:
  *           application/json:
  *             example:
- *               success_response:
- *                 summary: Successful debate response
- *                 value:
- *                   conversation_id: "123e4567-e89b-12d3-a456-426614174000"
- *                   message: [
- *                     {"role": "user", "message": "Debate: The earth is flat. Take side: Yes"},
- *                     {"role": "bot", "message": "I'll argue in favor of the earth being flat..."}
- *                   ]
+ *               conversation_id: "123e4567-e89b-12d3-a456-426614174000"
+ *               message: [
+ *                 {"role": "user", "message": "Debate: The earth is flat. Take side: Yes"},
+ *                 {"role": "bot", "message": "I'll argue in favor of the earth being flat..."}
+ *               ]
  *       400:
  *         description: Invalid input
  *         content:
  *           application/json:
  *             example:
- *               invalid_format:
- *                 summary: Invalid debate format
- *                 value:
- *                   error: "Invalid format. Please use: 'Debate: [topic]. Take side: [stance]'"
- *                   example: "Debate: The earth is flat. Take side: Yes"
- *                   format: "Debate: [topic]. Take side: [stance]"
+ *               error: "Invalid format. Please use: 'Debate: [topic]. Take side: [stance]'"
+ *               example: "Debate: The earth is flat. Take side: Yes"
+ *               format: "Debate: [topic]. Take side: [stance]"
+ *       401:
+ *         description: Unauthorized - API key required
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Invalid API key. Use header: x-api-key"
  *       404:
  *         description: Conversation not found
  *         content:
  *           application/json:
  *             example:
- *               conversation_not_found:
- *                 summary: Conversation not found
- *                 value:
- *                   error: "Conversation not found."
+ *               error: "Conversation not found."
  */
-router.post('/debate', async (req, res) => {
+router.post('/debate', simpleAuth, async (req, res) => {
   const { conversation_id, message } = req.body;
 
   // Validate required message parameter
