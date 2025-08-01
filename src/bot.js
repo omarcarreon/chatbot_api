@@ -15,6 +15,7 @@ const { validateDebateFormat } = require('./utils/validators.js');
 // AI API configuration
 const HF_API_URL = 'https://router.huggingface.co/v1/chat/completions';
 const HF_API_TOKEN = process.env.HF_API_TOKEN || '';
+const HF_MODEL = 'deepseek-ai/DeepSeek-V3-0324';
 
 const headers = {
   Authorization: `Bearer ${HF_API_TOKEN}`,
@@ -81,7 +82,7 @@ async function generateReply(history, convoId) {
     const response = await axios.post(
       HF_API_URL,
       {
-        model: "deepseek-ai/DeepSeek-V3-0324",
+        model: HF_MODEL,
         messages: [
           { role: "user", content: prompt }
         ],
