@@ -35,13 +35,50 @@ const { validateDebateFormat } = require('./utils/validators.js');
  *                 description: "The debate message. Format: 'Debate: [topic]. Take side: [stance]'"
  *             required:
  *               - message
+ *           examples:
+ *             new_debate:
+ *               summary: Start a new debate
+ *               value:
+ *                 message: "Debate: The earth is flat. Take side: You agree that the earth is flat."
+ *             continue_debate:
+ *               summary: Continue an existing debate
+ *               value:
+ *                 conversation_id: "123e4567-e89b-12d3-a456-426614174000"
+ *                 message: "But what about the scientific evidence that proves the earth is round?"
  *     responses:
  *       200:
  *         description: Success
+ *         content:
+ *           application/json:
+ *             example:
+ *               success_response:
+ *                 summary: Successful debate response
+ *                 value:
+ *                   conversation_id: "123e4567-e89b-12d3-a456-426614174000"
+ *                   message: [
+ *                     {"role": "user", "message": "Debate: The earth is flat. Take side: Yes"},
+ *                     {"role": "bot", "message": "I'll argue in favor of the earth being flat..."}
+ *                   ]
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             example:
+ *               invalid_format:
+ *                 summary: Invalid debate format
+ *                 value:
+ *                   error: "Invalid format. Please use: 'Debate: [topic]. Take side: [stance]'"
+ *                   example: "Debate: The earth is flat. Take side: Yes"
+ *                   format: "Debate: [topic]. Take side: [stance]"
  *       404:
  *         description: Conversation not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               conversation_not_found:
+ *                 summary: Conversation not found
+ *                 value:
+ *                   error: "Conversation not found."
  */
 router.post('/debate', async (req, res) => {
   const { conversation_id, message } = req.body;
