@@ -4,6 +4,15 @@
  * Handles Redis operations for conversation storage and retrieval.
  * Provides functions for topic/stance caching and conversation history.
  * 
+ * DESIGN DECISION: Two separate cache keys are used for better performance and flexibility:
+ * - conversation:topic:{convoId} - Stores debate topic and stance (small, rarely accessed)
+ * - conversation:history:{convoId} - Stores conversation messages (large, frequently accessed)
+ * 
+ * BENEFITS:
+ * - Faster history retrieval (no need to parse topic data every time)
+ * - Easier cleanup and maintenance
+ * - Better memory usage (topic data doesn't grow with conversation)
+ * 
  * @module cache
  * @version 1.0.0
  */

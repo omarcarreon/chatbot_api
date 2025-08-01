@@ -191,6 +191,19 @@ make check-node    # Check if Node.js is installed
 make check-npm     # Check if npm is installed
 ```
 
+## 🏗️ Technical Decisions
+
+### Cache Architecture
+The application uses two separate Redis cache keys for optimal performance:
+
+- **Topic Cache**: `conversation:topic:{convoId}` - Stores debate topic and stance
+- **History Cache**: `conversation:history:{convoId}` - Stores conversation messages
+
+**Benefits:**
+- Faster history retrieval (no need to parse topic data every time)
+- Easier cleanup and maintenance
+- Better memory usage (topic data doesn't grow with conversation)
+
 ## 🚨 Troubleshooting
 
 ### Common Issues
