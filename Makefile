@@ -57,7 +57,7 @@ install: check-docker check-node check-npm ## Install all requirements to run th
 		echo "# Server Configuration" >> .env; \
 		echo "PORT=3000" >> .env; \
 		echo "NODE_ENV=development" >> .env; \
-		echo "✅ .env file created. Please update HF_API_TOKEN with your token."; \
+		echo "✅ .env file created. Please update HF_API_TOKEN with the token provided by email."; \
 	else \
 		echo "✅ .env file already exists."; \
 	fi
