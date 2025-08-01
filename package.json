@@ -36,5 +36,8 @@
       "src/**/*.js",
       "!src/tests/**"
     ]
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
