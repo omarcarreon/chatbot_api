@@ -30,6 +30,11 @@ cd chatbot_api
 # Install all dependencies and setup environment
 make install
 
+
+# Check your email to find the HF_API_TOKEN required for the chatbot functionality
+# Update .env with the provided token
+
+
 # Start the service with Docker
 make run
 ```
