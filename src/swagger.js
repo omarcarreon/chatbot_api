@@ -14,7 +14,7 @@ const options = {
           type: 'apiKey',
           in: 'header',
           name: 'x-api-key',
-          description: 'Enter your API key in the format: your-api-key'
+          description: 'Enter your API key in the format: your-api-key. The API key value is the same value as the API_KEY variable in the .env file'
         }
       }
     },

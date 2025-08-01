@@ -33,9 +33,6 @@ make install
 
 # Validate that the .env file matches the one provided in the ZIP project sent by email
 
-
-# Start the service with Docker
-make run
 ```
 
 ### Option 2: Manual Installation
@@ -112,7 +109,7 @@ Once the service is running, visit the interactive API documentation:
 
 **Swagger UI**: http://localhost:3000/docs
 
-**Note**: The Swagger UI includes an "Authorize" button where you can enter your API key to test endpoints directly in the browser.
+**Note**: The Swagger UI includes an "Authorize" button where you can enter your API key to test endpoints directly in the browser. The API key value is the same value as the API_KEY variable in the .env file
 
 ## 🔧 API Usage
 
@@ -124,6 +121,8 @@ All API endpoints require authentication using the `x-api-key` header:
 # Include this header with all requests
 -H "x-api-key: api_key_here"
 ```
+
+The API key value is the same value as the API_KEY variable in the .env file
 
 ### Start a New Debate
 
