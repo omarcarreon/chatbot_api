@@ -6,6 +6,12 @@ jest.mock('axios');
 const app = require('../app');
 const cache = require('../cache');
 
+// Test API key for authentication
+const TEST_API_KEY = 'test-api-key-123';
+
+// Mock environment variable for testing
+process.env.API_KEY = TEST_API_KEY;
+
 describe('API Endpoints', () => {
   beforeEach(async () => {
     // Clear cache before each test
@@ -21,9 +27,9 @@ describe('API Endpoints', () => {
     await cache.closeConnection();
   });
 
-  describe('GET /api', () => {
+  describe('GET /', () => {
     it('should return API status message', async () => {
-      const response = await request(app).get('/api');
+      const response = await request(app).get('/');
       
       expect(response.status).toBe(200);
       expect(response.text).toContain('Chatbot API is running');
@@ -47,6 +53,7 @@ describe('API Endpoints', () => {
     it('should create new conversation with valid format', async () => {
       const response = await request(app)
         .post('/api/debate')
+        .set('x-api-key', TEST_API_KEY)
         .send({
           message: 'Debate: The Earth is flat. Take side: You agree'
         });
@@ -61,6 +68,7 @@ describe('API Endpoints', () => {
     it('should reject invalid debate format', async () => {
       const response = await request(app)
         .post('/api/debate')
+        .set('x-api-key', TEST_API_KEY)
         .send({
           message: 'Let\'s talk about AI'
         });
@@ -77,6 +85,7 @@ describe('API Endpoints', () => {
     it('should reject empty message', async () => {
       const response = await request(app)
         .post('/api/debate')
+        .set('x-api-key', TEST_API_KEY)
         .send({
           message: ''
         });
@@ -88,6 +97,7 @@ describe('API Endpoints', () => {
     it('should reject missing message', async () => {
       const response = await request(app)
         .post('/api/debate')
+        .set('x-api-key', TEST_API_KEY)
         .send({});
       
       expect(response.status).toBe(400);
@@ -97,6 +107,7 @@ describe('API Endpoints', () => {
     it('should reject non-string message', async () => {
       const response = await request(app)
         .post('/api/debate')
+        .set('x-api-key', TEST_API_KEY)
         .send({
           message: 123
         });
@@ -109,6 +120,7 @@ describe('API Endpoints', () => {
       // First request - create conversation
       const firstResponse = await request(app)
         .post('/api/debate')
+        .set('x-api-key', TEST_API_KEY)
         .send({
           message: 'Debate: The Earth is flat. Take side: You agree'
         });
@@ -119,6 +131,7 @@ describe('API Endpoints', () => {
       // Second request - continue conversation
       const secondResponse = await request(app)
         .post('/api/debate')
+        .set('x-api-key', TEST_API_KEY)
         .send({
           conversation_id: convoId,
           message: 'But there is evidence that proves the Earth is round'
@@ -133,6 +146,7 @@ describe('API Endpoints', () => {
     it('should return 404 for non-existent conversation', async () => {
       const response = await request(app)
         .post('/api/debate')
+        .set('x-api-key', TEST_API_KEY)
         .send({
           conversation_id: 'non-existent-id',
           message: 'Hello'
@@ -152,6 +166,7 @@ describe('API Endpoints', () => {
       for (const topic of validTopics) {
         const response = await request(app)
           .post('/api/debate')
+          .set('x-api-key', TEST_API_KEY)
           .send({ message: topic });
         
         expect(response.status).toBe(200);
