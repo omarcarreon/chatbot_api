@@ -10,7 +10,7 @@ help: ## Show all available make commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 # Check if required tools are installed
-check-docker: ## Check if Docker is installed
+check-docker: ## Check if Docker is installed and Docker files exist
 	@if ! command -v docker >/dev/null 2>&1; then \
 		echo "❌ Docker is not installed."; \
 		echo "📦 Installation instructions:"; \
@@ -20,6 +20,21 @@ check-docker: ## Check if Docker is installed
 		exit 1; \
 	fi
 	@echo "✅ Docker is installed"
+	@if [ ! -f Dockerfile ]; then \
+		echo "❌ Dockerfile not found."; \
+		echo "📦 Please ensure you have cloned the complete repository."; \
+		echo "   The Dockerfile should be included in the repository."; \
+		echo "   If you're missing files, try: git clone <repository-url>"; \
+		exit 1; \
+	fi
+	@if [ ! -f docker-compose.yml ]; then \
+		echo "❌ docker-compose.yml not found."; \
+		echo "📦 Please ensure you have cloned the complete repository."; \
+		echo "   The docker-compose.yml should be included in the repository."; \
+		echo "   If you're missing files, try: git clone <repository-url>"; \
+		exit 1; \
+	fi
+	@echo "✅ Docker files found"
 
 check-node: ## Check if Node.js is installed
 	@if ! command -v node >/dev/null 2>&1; then \
@@ -64,7 +79,7 @@ install: check-docker check-node check-npm ## Install all requirements to run th
 	else \
 		echo "✅ .env file already exists."; \
 	fi
-	@echo "✅ Installation complete!"
+	@echo "✅ Installation complete! Please update .env with the tokens provided by email and run 'make run' to start the service."
 	@echo "💡 Note: Redis will be started automatically with 'make run'"
 
 # Run tests
@@ -87,45 +102,8 @@ test: ## Run tests
 # Run the service and all related services in Docker
 run: check-docker ## Run the service and all related services in Docker
 	@echo "🚀 Starting services with Docker Compose..."
-	@if [ ! -f docker-compose.yml ]; then \
-		echo "❌ docker-compose.yml not found. Creating it..."; \
-		echo "version: '3.8'" > docker-compose.yml; \
-		echo "" >> docker-compose.yml; \
-		echo "services:" >> docker-compose.yml; \
-		echo "  redis:" >> docker-compose.yml; \
-		echo "    image: redis:alpine" >> docker-compose.yml; \
-		echo "    ports:" >> docker-compose.yml; \
-		echo "      - '6379:6379'" >> docker-compose.yml; \
-		echo "" >> docker-compose.yml; \
-		echo "  chatbot-api:" >> docker-compose.yml; \
-		echo "    build: ." >> docker-compose.yml; \
-		echo "    ports:" >> docker-compose.yml; \
-		echo "      - '3000:3000'" >> docker-compose.yml; \
-		echo "    environment:" >> docker-compose.yml; \
-		echo "      - REDIS_URL=redis://redis:6379" >> docker-compose.yml; \
-		echo "      - HF_API_TOKEN=\$${HF_API_TOKEN}" >> docker-compose.yml; \
-		echo "    depends_on:" >> docker-compose.yml; \
-		echo "      - redis" >> docker-compose.yml; \
-		echo "✅ docker-compose.yml created."; \
-	fi
-	@if [ ! -f Dockerfile ]; then \
-		echo "❌ Dockerfile not found. Creating it..."; \
-		echo "FROM node:18-alpine" > Dockerfile; \
-		echo "" >> Dockerfile; \
-		echo "WORKDIR /app" >> Dockerfile; \
-		echo "" >> Dockerfile; \
-		echo "COPY package*.json ./" >> Dockerfile; \
-		echo "RUN npm install" >> Dockerfile; \
-		echo "" >> Dockerfile; \
-		echo "COPY src/ ./src/" >> Dockerfile; \
-		echo "" >> Dockerfile; \
-		echo "EXPOSE 3000" >> Dockerfile; \
-		echo "" >> Dockerfile; \
-		echo "CMD [\"npm\", \"start\"]" >> Dockerfile; \
-		echo "✅ Dockerfile created."; \
-	fi
 	docker-compose up --build -d
-	@echo "✅ Services started!"
+	@echo "✅ Services started! Running in background..."
 	@echo "🌐 API available at: http://localhost:3000"
 	@echo "📚 API Documentation: http://localhost:3000/docs"
 	@echo "🔐 API requires authentication. Use x-api-key header."
