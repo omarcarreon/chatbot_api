@@ -23,6 +23,10 @@ A debate chatbot API built with Node.js, Express, and Redis. The API allows user
 ### Option 1: Using Make (Recommended)
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd chatbot_api
+
 # Install all dependencies and setup environment
 make install
 
