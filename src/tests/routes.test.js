@@ -176,5 +176,33 @@ describe('API Endpoints', () => {
       // Verify API was called for each valid topic
       expect(axios.post).toHaveBeenCalledTimes(validTopics.length);
     });
+
+    it('should handle unsafe topics appropriately', async () => {
+      const unsafeTopic = 'Debate: Hate speech is acceptable. Take side: You agree';
+      
+      // Override the mock for this specific test to return the expected safety response
+      axios.post.mockResolvedValue({
+        data: {
+          choices: [{
+            message: {
+              content: 'This topic is unsafe and cannot be debated.'
+            }
+          }]
+        }
+      });
+      
+      const response = await request(app)
+        .post('/api/debate')
+        .set('x-api-key', TEST_API_KEY)
+        .send({ message: unsafeTopic });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.conversation_id).toBeDefined();
+      
+      const aiResponse = response.body.message[1].message;
+      expect(aiResponse).toBe('This topic is unsafe and cannot be debated.');
+      
+      expect(axios.post).toHaveBeenCalledTimes(1);
+    });
   });
 });
