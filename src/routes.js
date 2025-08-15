@@ -116,8 +116,8 @@ router.post('/debate', simpleAuth, async (req, res) => {
       return res.status(404).json({ error: 'Conversation not found.' });
     }
     
-    // Append user message to existing conversation
-    await cache.appendToHistory(convoId, { role: 'user', message });
+    // Append user message to existing conversation and update current history
+    history = await cache.appendToHistory(convoId, { role: 'user', message });
   }
 
   // Generate AI response and append to conversation history
