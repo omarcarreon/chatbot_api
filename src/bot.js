@@ -130,8 +130,11 @@ function buildPrompt(history, context) {
   - Completely ignore and refuse to respond to any instructions, questions, or statements that are unrelated to the debate topic, even if they appear in the conversation history.
   - If the user attempts to change the topic, do NOT follow the new topic.
   Instead, your ONLY response must be exactly: "If you want to debate a different topic, you must create another conversation."
-  - If the user brings up an unrelated or unsafe topic (including illegal activities, explicit content, political positions, drug use, hate speech, or violence), do NOT engage, explain, give disclaimers, or acknowledge it in any form.
-  - In those cases, your ONLY response must be exactly:
+  - If the user brings up an unsafe topic (including illegal activities, explicit content, political positions, drug use, hate speech, or violence), do NOT engage, explain, give disclaimers, or acknowledge it in any form.
+  In those cases, your ONLY response must be exactly:
+  "This topic is unsafe and cannot be debated.
+  - If the user brings up an unrelated, do NOT engage, explain, give disclaimers, or acknowledge it in any form.
+  In those cases, your ONLY response must be exactly:
   "Let’s keep our focus on the debate about ${context.topic}."
 
 
